@@ -59,7 +59,7 @@ const Chat = () => {
                   <Menu size={20} />
                 </Button>
               </DrawerTrigger>
-              <DrawerContent side="left" className="h-screen max-h-screen p-0">
+              <DrawerContent className="h-screen max-h-screen p-0">
                 <div className="h-full">
                   <ChatSidebar isMobile onClose={() => setDrawerOpen(false)} />
                 </div>

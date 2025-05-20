@@ -1,6 +1,51 @@
 
 import { create } from 'zustand';
 
+// Add TypeScript declarations for Web Speech API
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+  error: any;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: SpeechRecognitionEvent) => void;
+  onend: () => void;
+}
+
+// Create a global type declaration
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
 interface VoiceState {
   isListening: boolean;
   transcript: string;
@@ -11,11 +56,11 @@ interface VoiceState {
 
 export const useVoiceStore = create<VoiceState>()((set, get) => {
   // SpeechRecognition setup
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition: SpeechRecognition | null = null;
 
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
+  if (SpeechRecognitionAPI) {
+    recognition = new SpeechRecognitionAPI();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US'; // Default language
