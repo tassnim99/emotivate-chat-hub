@@ -119,6 +119,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "Je suis content d'apprendre que vous allez bien ! Quelles choses positives se sont produites récemment dans votre vie ? Célébrer les petites victoires est important pour notre bien-être mental.";
       } else if (userMessage.includes('merci')) {
         return "Je vous en prie. Je suis là pour vous soutenir chaque fois que vous avez besoin de quelqu'un à qui parler. Votre santé mentale est importante.";
+      } else if (userMessage.includes('routine') || userMessage.includes('habitude')) {
+        return "Voici une routine qui pourrait vous aider :\n\n1. Commencez la journée par 10 minutes de méditation ou de respiration profonde\n2. Prenez un petit déjeuner équilibré et hydratez-vous\n3. Fixez-vous 1-3 objectifs prioritaires pour la journée\n4. Faites une pause de 5 minutes toutes les heures pour vous étirer et respirer\n5. Consacrez 30 minutes à une activité physique\n6. Réservez du temps pour une activité qui vous fait plaisir\n7. Le soir, notez 3 choses positives de votre journée\n8. Limitez les écrans 1h avant de dormir\n\nAdaptez cette routine à vos besoins spécifiques. La constance est plus importante que la perfection.";
       } else {
         return "Merci de partager cela avec moi. Comment cette situation vous fait-elle vous sentir ? Comprendre nos émotions est une étape importante pour le bien-être mental. Je suis là pour vous écouter et vous aider à traiter ces sentiments.";
       }
@@ -134,6 +136,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "I'm glad to hear you're doing well! What positive things have been happening in your life recently? Celebrating small victories is important for our mental wellbeing.";
       } else if (userMessage.includes('thank')) {
         return "You're welcome. I'm here to support you whenever you need someone to talk to. Your mental health matters.";
+      } else if (userMessage.includes('routine') || userMessage.includes('habit')) {
+        return "Here's a routine that might help you:\n\n1. Start the day with 10 minutes of meditation or deep breathing\n2. Have a balanced breakfast and hydrate\n3. Set 1-3 priority goals for the day\n4. Take a 5-minute break every hour to stretch and breathe\n5. Dedicate 30 minutes to physical activity\n6. Reserve time for an activity you enjoy\n7. In the evening, note 3 positive things from your day\n8. Limit screen time 1 hour before sleeping\n\nAdapt this routine to your specific needs. Consistency is more important than perfection.";
       } else {
         return "Thank you for sharing that with me. How does this situation make you feel? Understanding our emotions is an important step in mental wellness. I'm here to listen and help you process these feelings.";
       }
@@ -149,6 +153,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "¡Me alegra saber que estás bien! ¿Qué cosas positivas han estado sucediendo en tu vida recientemente? Celebrar pequeñas victorias es importante para nuestro bienestar mental.";
       } else if (userMessage.includes('gracias')) {
         return "De nada. Estoy aquí para apoyarte siempre que necesites a alguien con quien hablar. Tu salud mental es importante.";
+      } else if (userMessage.includes('rutina') || userMessage.includes('hábito')) {
+        return "Aquí hay una rutina que podría ayudarte:\n\n1. Comienza el día con 10 minutos de meditación o respiración profunda\n2. Desayuna de forma equilibrada e hidrátate\n3. Establece 1-3 objetivos prioritarios para el día\n4. Toma un descanso de 5 minutos cada hora para estirar y respirar\n5. Dedica 30 minutos a la actividad física\n6. Reserva tiempo para una actividad que disfrutes\n7. Por la noche, anota 3 cosas positivas de tu día\n8. Limita el tiempo de pantalla 1 hora antes de dormir\n\nAdapta esta rutina a tus necesidades específicas. La consistencia es más importante que la perfección.";
       } else {
         return "Gracias por compartir eso conmigo. ¿Cómo te hace sentir esta situación? Entender nuestras emociones es un paso importante en el bienestar mental. Estoy aquí para escuchar y ayudarte a procesar estos sentimientos.";
       }
@@ -164,6 +170,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "Ich freue mich zu hören, dass es dir gut geht! Welche positiven Dinge sind in letzter Zeit in deinem Leben passiert? Kleine Erfolge zu feiern ist wichtig für unser mentales Wohlbefinden.";
       } else if (userMessage.includes('danke')) {
         return "Gerne. Ich bin für dich da, wann immer du jemanden zum Reden brauchst. Deine psychische Gesundheit ist wichtig.";
+      } else if (userMessage.includes('routine') || userMessage.includes('gewohnheit')) {
+        return "Hier ist eine Routine, die dir helfen könnte:\n\n1. Beginne den Tag mit 10 Minuten Meditation oder tiefer Atmung\n2. Frühstücke ausgewogen und hydratisiere dich\n3. Setze 1-3 Prioritätsziele für den Tag\n4. Mache jede Stunde eine 5-minütige Pause zum Strecken und Atmen\n5. Widme 30 Minuten körperlicher Aktivität\n6. Reserviere Zeit für eine Aktivität, die du genießt\n7. Notiere abends 3 positive Dinge deines Tages\n8. Begrenze die Bildschirmzeit 1 Stunde vor dem Schlafengehen\n\nPasse diese Routine an deine spezifischen Bedürfnisse an. Konsistenz ist wichtiger als Perfektion.";
       } else {
         return "Danke, dass du das mit mir teilst. Wie lässt dich diese Situation fühlen? Das Verstehen unserer Emotionen ist ein wichtiger Schritt für das mentale Wohlbefinden. Ich bin hier, um zuzuhören und dir zu helfen, diese Gefühle zu verarbeiten.";
       }
@@ -179,6 +187,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "Sono contento di sentire che stai bene! Quali cose positive sono successe nella tua vita recentemente? Celebrare piccole vittorie è importante per il nostro benessere mentale.";
       } else if (userMessage.includes('grazie')) {
         return "Prego. Sono qui per supportarti ogni volta che hai bisogno di qualcuno con cui parlare. La tua salute mentale è importante.";
+      } else if (userMessage.includes('routine') || userMessage.includes('abitudine')) {
+        return "Ecco una routine che potrebbe aiutarti:\n\n1. Inizia la giornata con 10 minuti di meditazione o respirazione profonda\n2. Fai una colazione equilibrata e idratati\n3. Stabilisci 1-3 obiettivi prioritari per la giornata\n4. Fai una pausa di 5 minuti ogni ora per allungarti e respirare\n5. Dedica 30 minuti all'attività fisica\n6. Riserva del tempo per un'attività che ti piace\n7. La sera, annota 3 cose positive della tua giornata\n8. Limita il tempo davanti agli schermi 1 ora prima di dormire\n\nAdatta questa routine alle tue esigenze specifiche. La costanza è più importante della perfezione.";
       } else {
         return "Grazie per aver condiviso questo con me. Come ti fa sentire questa situazione? Comprendere le nostre emozioni è un passo importante nel benessere mentale. Sono qui per ascoltare e aiutarti a elaborare questi sentimenti.";
       }
@@ -195,6 +205,8 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
         return "يسعدني سماع أنك بخير! ما هي الأشياء الإيجابية التي حدثت في حياتك مؤخرًا؟ الاحتفال بالانتصارات الصغيرة مهم لصحتنا النفسية.";
       } else if (userMessage.includes('شكرا')) {
         return "على الرحب والسعة. أنا هنا لدعمك كلما احتجت إلى شخص للتحدث معه. صحتك النفسية مهمة.";
+      } else if (userMessage.includes('روتين') || userMessage.includes('عادة')) {
+        return "إليك روتينًا يمكن أن يساعدك:\n\n1. ابدأ يومك بـ 10 دقائق من التأمل أو التنفس العميق\n2. تناول فطورًا متوازنًا وحافظ على ترطيب جسمك\n3. حدد 1-3 أهداف ذات أولوية لليوم\n4. خذ استراحة لمدة 5 دقائق كل ساعة للتمدد والتنفس\n5. خصص 30 دقيقة للنشاط البدني\n6. احجز وقتًا لنشاط تستمتع به\n7. في المساء، دوّن 3 أشياء إيجابية من يومك\n8. قلل من وقت الشاشة قبل ساعة من النوم\n\nقم بتكييف هذا الروتين وفقًا لاحتياجاتك الخاصة. الاستمرارية أهم من الكمال.";
       } else {
         return "شكرًا لمشاركة ذلك معي. كيف تجعلك هذه الحالة تشعر؟ فهم عواطفنا هو خطوة مهمة في العافية النفسية. أنا هنا للاستماع ومساعدتك في معالجة هذه المشاعر.";
       }

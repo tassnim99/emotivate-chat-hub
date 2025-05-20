@@ -23,6 +23,26 @@ const languages = [
   { code: 'ar-SA', name: 'العربية' },
 ];
 
+// Placeholders for different languages
+const getPlaceholderByLanguage = (lang: string): string => {
+  switch (lang) {
+    case 'en-US':
+      return "Ask me a question about your mental health...";
+    case 'fr-FR':
+      return "Posez-moi une question sur votre santé mentale...";
+    case 'es-ES':
+      return "Hazme una pregunta sobre tu salud mental...";
+    case 'it-IT':
+      return "Fammi una domanda sulla tua salute mentale...";
+    case 'de-DE':
+      return "Stellen Sie mir eine Frage zu Ihrer psychischen Gesundheit...";
+    case 'ar-SA':
+      return "اسألني سؤالاً عن صحتك النفسية...";
+    default:
+      return "Posez-moi une question sur votre santé mentale...";
+  }
+};
+
 const ChatInput = () => {
   const [message, setMessage] = useState('');
   const { addMessage, language: chatLanguage, setLanguage: setChatLanguage } = useChatStore();
@@ -37,6 +57,7 @@ const ChatInput = () => {
   } = useVoiceStore();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isRecordingPulse, setIsRecordingPulse] = useState(false);
+  const [placeholder, setPlaceholder] = useState(getPlaceholderByLanguage('fr-FR'));
 
   // Update textarea height based on content
   useEffect(() => {
@@ -45,6 +66,11 @@ const ChatInput = () => {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
     }
   }, [message]);
+
+  // Update placeholder when language changes
+  useEffect(() => {
+    setPlaceholder(getPlaceholderByLanguage(chatLanguage));
+  }, [chatLanguage]);
 
   // Add transcript to message when voice input is received
   useEffect(() => {
@@ -88,7 +114,17 @@ const ChatInput = () => {
 
   const toggleVoiceInput = () => {
     if (!isAvailable) {
-      toast.error("La reconnaissance vocale n'est pas prise en charge par ce navigateur");
+      // Show toast message based on current language
+      const messages = {
+        'fr-FR': "La reconnaissance vocale n'est pas prise en charge par ce navigateur",
+        'en-US': "Voice recognition is not supported by this browser",
+        'es-ES': "El reconocimiento de voz no es compatible con este navegador",
+        'de-DE': "Spracherkennung wird von diesem Browser nicht unterstützt",
+        'it-IT': "Il riconoscimento vocale non è supportato da questo browser",
+        'ar-SA': "التعرف على الصوت غير مدعوم من قبل هذا المتصفح"
+      };
+      
+      toast.error(messages[chatLanguage] || messages['fr-FR']);
       return;
     }
     
@@ -105,19 +141,45 @@ const ChatInput = () => {
     
     // Get language name for toast
     const langName = languages.find(lang => lang.code === langCode)?.name || langCode;
-    toast.success(`Langue changée: ${langName}`);
+    
+    // Show toast message based on selected language
+    const messages = {
+      'fr-FR': `Langue changée: ${langName}`,
+      'en-US': `Language changed: ${langName}`,
+      'es-ES': `Idioma cambiado: ${langName}`,
+      'de-DE': `Sprache geändert: ${langName}`,
+      'it-IT': `Lingua cambiata: ${langName}`,
+      'ar-SA': `تم تغيير اللغة: ${langName}`
+    };
+    
+    toast.success(messages[langCode] || messages['fr-FR']);
+  };
+
+  // Get "Listening..." text based on current language
+  const getListeningText = () => {
+    const listeningTexts = {
+      'fr-FR': "Écoute en cours...",
+      'en-US': "Listening...",
+      'es-ES': "Escuchando...",
+      'de-DE': "Hören...",
+      'it-IT': "Ascolto in corso...",
+      'ar-SA': "جاري الاستماع..."
+    };
+    
+    return listeningTexts[chatLanguage] || listeningTexts['fr-FR'];
   };
 
   return (
     <div className="border rounded-lg p-2 flex items-end gap-2 bg-background">
       <Textarea
         ref={textareaRef}
-        placeholder="Posez-moi une question sur votre santé mentale..."
+        placeholder={placeholder}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={1}
         className="resize-none min-h-[40px] max-h-[150px] border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        dir={chatLanguage === 'ar-SA' ? 'rtl' : 'ltr'} // Add RTL support for Arabic
       />
       <div className="flex shrink-0 space-x-1">
         <DropdownMenu>
@@ -179,7 +241,7 @@ const ChatInput = () => {
             <span className={`${isRecordingPulse ? 'animate-wave-2' : ''}`}></span>
             <span className={`${isRecordingPulse ? 'animate-wave-3' : ''}`}></span>
           </div>
-          <span className="text-sm font-medium">Écoute en cours...</span>
+          <span className="text-sm font-medium">{getListeningText()}</span>
         </div>
       )}
     </div>

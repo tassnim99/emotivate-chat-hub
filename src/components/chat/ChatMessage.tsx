@@ -10,13 +10,23 @@ interface ChatMessageProps {
   message: MessageType;
 }
 
+// Helper to detect if content is in right-to-left language
+const isRTL = (text: string) => {
+  // Simple detection of Arabic characters
+  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text);
+};
+
 const ChatMessage = ({ message }: ChatMessageProps) => {
   const isAI = message.role === 'assistant';
   const formattedTime = format(message.timestamp, 'h:mm a');
+  const isRightToLeft = isRTL(message.content);
 
   if (message.role === 'system') {
     return null; // Don't render system messages
   }
+
+  // Split by new lines to handle paragraphs
+  const paragraphs = message.content.split('\n');
 
   return (
     <motion.div 
@@ -50,9 +60,16 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
           "prose prose-sm prose-p:leading-relaxed prose-pre:p-0",
           "max-w-full transition-all duration-300 hover:bg-muted/20 p-2 rounded-md"
         )}>
-          {message.content.split('\n').map((paragraph, i) => (
-            <p key={i} className="whitespace-pre-wrap">{paragraph}</p>
-          ))}
+          <div className={isRightToLeft ? "text-right" : "text-left"} dir={isRightToLeft ? "rtl" : "ltr"}>
+            {paragraphs.map((paragraph, i) => (
+              <p key={i} className={cn(
+                "whitespace-pre-wrap",
+                i < paragraphs.length - 1 ? "mb-4" : ""
+              )}>
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>

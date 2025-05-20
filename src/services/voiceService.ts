@@ -74,7 +74,20 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
 
     recognition.onstart = () => {
       console.log('Voice recognition started');
-      toast.success('Écoute active');
+      
+      // Display toast message based on current language
+      const messages = {
+        'fr-FR': 'Écoute active',
+        'en-US': 'Listening active',
+        'es-ES': 'Escucha activa',
+        'it-IT': 'Ascolto attivo',
+        'de-DE': 'Aktives Zuhören',
+        'ar-SA': 'الاستماع نشط'
+      };
+      
+      const lang = get().language;
+      toast.success(messages[lang] || messages['fr-FR']);
+      
       set({ isListening: true });
     };
 
@@ -93,7 +106,20 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
 
     recognition.onerror = (event) => {
       console.error('Speech recognition error', event.error);
-      toast.error('Erreur de reconnaissance vocale: ' + event.error);
+      
+      // Display error toast message based on current language
+      const messages = {
+        'fr-FR': 'Erreur de reconnaissance vocale: ',
+        'en-US': 'Voice recognition error: ',
+        'es-ES': 'Error de reconocimiento de voz: ',
+        'it-IT': 'Errore di riconoscimento vocale: ',
+        'de-DE': 'Spracherkennungsfehler: ',
+        'ar-SA': 'خطأ في التعرف على الصوت: '
+      };
+      
+      const lang = get().language;
+      toast.error((messages[lang] || messages['fr-FR']) + event.error);
+      
       set({ isListening: false });
     };
 
@@ -101,8 +127,19 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
       console.log('Voice recognition ended');
       if (get().isListening) {
         set({ isListening: false });
-        // Only show toast if the recognition wasn't manually stopped
-        toast.info('Écoute terminée');
+        
+        // Display toast message based on current language
+        const messages = {
+          'fr-FR': 'Écoute terminée',
+          'en-US': 'Listening ended',
+          'es-ES': 'Escucha terminada',
+          'it-IT': 'Ascolto terminato',
+          'de-DE': 'Zuhören beendet',
+          'ar-SA': 'انتهى الاستماع'
+        };
+        
+        const lang = get().language;
+        toast.info(messages[lang] || messages['fr-FR']);
       }
     };
   } else {
@@ -117,7 +154,18 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
 
     startListening: () => {
       if (!recognition) {
-        toast.error('La reconnaissance vocale n\'est pas disponible sur ce navigateur');
+        // Display error toast message based on current language
+        const messages = {
+          'fr-FR': 'La reconnaissance vocale n\'est pas disponible sur ce navigateur',
+          'en-US': 'Voice recognition is not available on this browser',
+          'es-ES': 'El reconocimiento de voz no está disponible en este navegador',
+          'it-IT': 'Il riconoscimento vocale non è disponibile su questo browser',
+          'de-DE': 'Spracherkennung ist in diesem Browser nicht verfügbar',
+          'ar-SA': 'التعرف على الصوت غير متوفر على هذا المتصفح'
+        };
+        
+        const lang = get().language;
+        toast.error(messages[lang] || messages['fr-FR']);
         return;
       }
       
@@ -133,7 +181,20 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
         recognition.start();
       } catch (error) {
         console.error('Error starting speech recognition:', error);
-        toast.error('Erreur lors du démarrage de la reconnaissance vocale');
+        
+        // Display error toast message based on current language
+        const messages = {
+          'fr-FR': 'Erreur lors du démarrage de la reconnaissance vocale',
+          'en-US': 'Error starting voice recognition',
+          'es-ES': 'Error al iniciar el reconocimiento de voz',
+          'it-IT': 'Errore durante l\'avvio del riconoscimento vocale',
+          'de-DE': 'Fehler beim Starten der Spracherkennung',
+          'ar-SA': 'خطأ في بدء التعرف على الصوت'
+        };
+        
+        const lang = get().language;
+        toast.error(messages[lang] || messages['fr-FR']);
+        
         set({ isListening: false });
       }
     },
@@ -155,6 +216,20 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
       set({ language: lang });
       if (recognition) {
         recognition.lang = lang;
+        
+        // Restart recognition if it's currently active
+        if (get().isListening) {
+          recognition.stop();
+          setTimeout(() => {
+            if (recognition) {
+              try {
+                recognition.start();
+              } catch (error) {
+                console.error('Error restarting speech recognition:', error);
+              }
+            }
+          }, 300);
+        }
       }
     }
   };
