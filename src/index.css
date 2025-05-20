@@ -14,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 20%;
 
-    --primary: 255 56% 59%;
+    --primary: 255 70% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 61% 48%;
+    --secondary: 270 75% 55%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 240 5% 96%;
     --muted-foreground: 240 4% 46%;
 
-    --accent: 276 100% 36%;
+    --accent: 276 100% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -46,37 +46,37 @@
   }
 
   .dark {
-    --background: 240 21% 15%;
+    --background: 240 26% 12%;
     --foreground: 0 0% 98%;
 
-    --card: 240 21% 15%;
+    --card: 240 24% 15%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 21% 15%;
+    --popover: 240 24% 15%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 255 56% 59%;
+    --primary: 255 70% 65%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 270 61% 48%;
+    --secondary: 270 75% 55%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 240 21% 20%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 276 100% 36%;
+    --accent: 276 100% 42%;
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 40.6%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 240 21% 20%;
     --input: 240 21% 20%;
     --ring: 255 56% 59%;
 
-    --sidebar-background: 240 21% 15%;
+    --sidebar-background: 240 26% 12%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 255 56% 59%;
+    --sidebar-primary: 255 70% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 21% 20%;
     --sidebar-accent-foreground: 0 0% 98%;
@@ -91,7 +91,11 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    @apply bg-mindcare-primary/20 text-foreground;
   }
 }
 
@@ -113,7 +117,7 @@
   }
 
   .voice-wave span {
-    @apply inline-block w-1.5 h-1.5 rounded-full bg-mindcare-primary mx-0.5;
+    @apply inline-block w-1.5 h-8 rounded-full bg-mindcare-primary mx-0.5 transform origin-bottom;
   }
 
   .blurred-bg {
@@ -123,4 +127,41 @@
   .gradient-text {
     @apply bg-gradient-to-r from-mindcare-primary to-mindcare-accent bg-clip-text text-transparent;
   }
+
+  .feature-card {
+    @apply p-6 rounded-xl border transition-all hover:shadow-md hover:-translate-y-1 duration-300;
+  }
+
+  .feature-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center bg-mindcare-primary/10 text-mindcare-primary mb-4;
+  }
+}
+
+/* Animation des vagues vocales */
+@keyframes wave {
+  0% { height: 0.5rem; }
+  50% { height: 1.5rem; }
+  100% { height: 0.5rem; }
+}
+
+.animate-wave-1 {
+  animation: wave 1.3s ease-in-out infinite;
+}
+
+.animate-wave-2 {
+  animation: wave 1.3s ease-in-out infinite 0.2s;
+}
+
+.animate-wave-3 {
+  animation: wave 1.3s ease-in-out infinite 0.4s;
+}
+
+/* Animation de fade in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }

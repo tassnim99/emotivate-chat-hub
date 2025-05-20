@@ -3,15 +3,23 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 const Logo = ({ size = 'md', className }: LogoProps) => {
   const sizeClasses = {
+    xs: 'h-6',
     sm: 'h-8',
-    md: 'h-12',
+    md: 'h-10',
     lg: 'h-16',
+  };
+
+  const textSizeClasses = {
+    xs: 'text-base',
+    sm: 'text-xl',
+    md: 'text-2xl',
+    lg: 'text-3xl',
   };
 
   return (
@@ -56,11 +64,7 @@ const Logo = ({ size = 'md', className }: LogoProps) => {
           </svg>
         </div>
       </div>
-      <div className={cn("ml-2 font-bold tracking-tight", {
-        "text-xl": size === 'sm',
-        "text-2xl": size === 'md',
-        "text-3xl": size === 'lg',
-      })}>
+      <div className={cn("ml-2 font-bold tracking-tight", textSizeClasses[size])}>
         <span className="gradient-text">Mind</span>
         <span className="text-mindcare-secondary">Care</span>
         <span className="text-mindcare-text">AI</span>

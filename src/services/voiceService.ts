@@ -1,5 +1,6 @@
 
 import { create } from 'zustand';
+import { toast } from 'sonner';
 
 // Add TypeScript declarations for Web Speech API
 interface SpeechRecognitionEvent extends Event {
@@ -36,6 +37,7 @@ interface SpeechRecognition extends EventTarget {
   onresult: (event: SpeechRecognitionEvent) => void;
   onerror: (event: SpeechRecognitionEvent) => void;
   onend: () => void;
+  onstart?: () => void;
 }
 
 // Create a global type declaration
@@ -49,9 +51,11 @@ declare global {
 interface VoiceState {
   isListening: boolean;
   transcript: string;
+  language: string;
   startListening: () => void;
   stopListening: () => void;
   clearTranscript: () => void;
+  setLanguage: (lang: string) => void;
 }
 
 export const useVoiceStore = create<VoiceState>()((set, get) => {
@@ -63,7 +67,12 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     recognition = new SpeechRecognitionAPI();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-US'; // Default language
+    recognition.lang = 'fr-FR'; // Default language is French
+
+    recognition.onstart = () => {
+      console.log('Voice recognition started');
+      toast.success('Écoute active');
+    };
 
     recognition.onresult = (event) => {
       const transcript = Array.from(event.results)
@@ -75,28 +84,36 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
 
     recognition.onerror = (event) => {
       console.error('Speech recognition error', event.error);
+      toast.error('Erreur de reconnaissance vocale');
       set({ isListening: false });
     };
 
     recognition.onend = () => {
+      console.log('Voice recognition ended');
       set({ isListening: false });
     };
+  } else {
+    console.warn('Speech recognition not supported in this browser');
   }
 
   return {
     isListening: false,
     transcript: '',
+    language: 'fr-FR',
 
     startListening: () => {
       if (recognition) {
         try {
+          // Reset recognition language to current setting
+          recognition.lang = get().language;
           recognition.start();
           set({ isListening: true });
         } catch (error) {
           console.error('Error starting speech recognition:', error);
+          toast.error('Erreur lors du démarrage de la reconnaissance vocale');
         }
       } else {
-        console.error('Speech recognition not supported in this browser');
+        toast.error('La reconnaissance vocale n\'est pas prise en charge par ce navigateur');
       }
     },
 
@@ -109,6 +126,13 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
 
     clearTranscript: () => {
       set({ transcript: '' });
+    },
+
+    setLanguage: (lang: string) => {
+      set({ language: lang });
+      if (recognition) {
+        recognition.lang = lang;
+      }
     }
   };
 });

@@ -10,6 +10,7 @@ import ChatMessage from '@/components/chat/ChatMessage';
 import ChatInput from '@/components/chat/ChatInput';
 import TypingIndicator from '@/components/chat/TypingIndicator';
 import { useChatStore } from '@/services/chatService';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 const Chat = () => {
   const { currentSessionId, sessions, createSession, isLoading } = useChatStore();
@@ -52,24 +53,28 @@ const Chat = () => {
       <div className="flex-1 flex flex-col h-full">
         {/* Header */}
         <header className="h-14 border-b flex items-center justify-between px-4">
-          {!isDesktop && (
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-              <DrawerTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu size={20} />
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent className="h-screen max-h-screen p-0">
-                <div className="h-full">
-                  <ChatSidebar isMobile onClose={() => setDrawerOpen(false)} />
-                </div>
-              </DrawerContent>
-            </Drawer>
-          )}
-          <div className="font-semibold gradient-text">
-            {currentSession?.title || 'New Conversation'}
+          <div className="flex items-center">
+            {!isDesktop && (
+              <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <DrawerTrigger asChild>
+                  <Button variant="ghost" size="icon" className="mr-2">
+                    <Menu size={20} />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className="h-screen max-h-screen p-0">
+                  <div className="h-full">
+                    <ChatSidebar isMobile onClose={() => setDrawerOpen(false)} />
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            )}
+            <div className="font-semibold gradient-text">
+              {currentSession?.title || 'Nouvelle Conversation'}
+            </div>
           </div>
-          <div></div> {/* Empty div for flex alignment */}
+          <div className="flex items-center">
+            <ThemeSwitcher />
+          </div>
         </header>
         
         {/* Chat messages */}
