@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, HeartPulse, MessageSquare, VolumeUp } from 'lucide-react';
+import { Brain, HeartPulse, MessageSquare, Volume } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 
@@ -85,7 +85,7 @@ const Presentation = () => {
               description="Notre IA comprend vos émotions et adapte ses réponses pour vous offrir un soutien personnalisé."
             />
             <FeatureCard 
-              icon={VolumeUp} 
+              icon={Volume} 
               title="Interaction vocale" 
               description="Communiquez par la voix si vous préférez parler plutôt qu'écrire, pour une expérience plus naturelle."
             />
