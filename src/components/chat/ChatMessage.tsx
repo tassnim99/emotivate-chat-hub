@@ -3,7 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Message as MessageType } from '@/services/chatService';
 import { format } from 'date-fns';
-import Logo from '@/components/Logo';
+import { Brain } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ChatMessageProps {
@@ -28,11 +28,11 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
       transition={{ duration: 0.3 }}
     >
       <div className={cn(
-        "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md",
+        "flex h-10 w-10 shrink-0 select-none items-center justify-center rounded-full",
         isAI ? "bg-mindcare-primary/20" : "bg-mindcare-secondary/20"
       )}>
         {isAI ? (
-          <Logo size="xs" className="scale-[0.7]" />
+          <Brain size={20} className="text-mindcare-primary" />
         ) : (
           <span className="text-sm font-medium">Vous</span>
         )}
@@ -48,7 +48,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
         </div>
         <div className={cn(
           "prose prose-sm prose-p:leading-relaxed prose-pre:p-0",
-          "max-w-full"
+          "max-w-full transition-all duration-300 hover:bg-muted/20 p-2 rounded-md"
         )}>
           {message.content.split('\n').map((paragraph, i) => (
             <p key={i} className="whitespace-pre-wrap">{paragraph}</p>

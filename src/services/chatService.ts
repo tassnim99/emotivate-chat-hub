@@ -106,38 +106,102 @@ const mockOpenAIResponse = async (messages: Message[], language: string): Promis
   const detectedLang = detectLanguage(userMessage);
   const responseLang = language || detectedLang;
   
-  // Simple multilingual response logic
-  if (responseLang === 'fr-FR') {
-    if (userMessage.includes('bonjour') || userMessage.includes('salut')) {
-      return "Bonjour ! Comment vous sentez-vous aujourd'hui ? Je suis là pour vous écouter et vous soutenir.";
-    } else if (userMessage.includes('triste') || userMessage.includes('déprimé')) {
-      return "Je suis désolé d'apprendre que vous vous sentez mal. Voulez-vous parler de ce qui vous préoccupe ? Rappelez-vous qu'il est normal de ne pas se sentir bien parfois, et le fait de tendre la main est un premier pas courageux.";
-    } else if (userMessage.includes('anxieux') || userMessage.includes('stressé')) {
-      return "L'anxiété est courante. Essayons de comprendre ce qui cause ces sentiments. Cela vous aiderait-il de prendre quelques respirations profondes ensemble ? Inspirez pendant 4 temps, retenez pendant 4, et expirez pendant 6. Cela peut aider à calmer votre système nerveux.";
-    } else if (userMessage.includes('heureux') || userMessage.includes('bien')) {
-      return "Je suis content d'apprendre que vous allez bien ! Quelles choses positives se sont produites récemment dans votre vie ? Célébrer les petites victoires est important pour notre bien-être mental.";
-    } else if (userMessage.includes('merci')) {
-      return "Je vous en prie. Je suis là pour vous soutenir chaque fois que vous avez besoin de quelqu'un à qui parler. Votre santé mentale est importante.";
-    } else {
-      return "Merci de partager cela avec moi. Comment cette situation vous fait-elle vous sentir ? Comprendre nos émotions est une étape importante pour le bien-être mental. Je suis là pour vous écouter et vous aider à traiter ces sentiments.";
-    }
-  } else if (responseLang === 'en-US') {
-    if (userMessage.includes('hello') || userMessage.includes('hi')) {
-      return "Hello! How are you feeling today? I'm here to listen and support you.";
-    } else if (userMessage.includes('sad') || userMessage.includes('depressed')) {
-      return "I'm sorry to hear you're feeling down. Would you like to talk about what's troubling you? Remember that it's okay to not be okay sometimes, and reaching out is a brave first step.";
-    } else if (userMessage.includes('anxious') || userMessage.includes('stressed')) {
-      return "Feeling anxious is common. Let's try to understand what's causing these feelings. Would it help to take a few deep breaths together? Breathe in for 4 counts, hold for 4, and exhale for 6. This can help calm your nervous system.";
-    } else if (userMessage.includes('happy') || userMessage.includes('good')) {
-      return "I'm glad to hear you're doing well! What positive things have been happening in your life recently? Celebrating small victories is important for our mental wellbeing.";
-    } else if (userMessage.includes('thank')) {
-      return "You're welcome. I'm here to support you whenever you need someone to talk to. Your mental health matters.";
-    } else {
-      return "Thank you for sharing that with me. How does this situation make you feel? Understanding our emotions is an important step in mental wellness. I'm here to listen and help you process these feelings.";
-    }
-  } else {
-    // Default to basic French responses for other languages
-    return "Merci de partager cela avec moi. Je suis là pour vous écouter et vous soutenir dans votre parcours de bien-être mental.";
+  // Improved language-specific responses
+  switch (responseLang) {
+    case 'fr-FR':
+      if (userMessage.includes('bonjour') || userMessage.includes('salut')) {
+        return "Bonjour ! Comment vous sentez-vous aujourd'hui ? Je suis là pour vous écouter et vous soutenir.";
+      } else if (userMessage.includes('triste') || userMessage.includes('déprimé')) {
+        return "Je suis désolé d'apprendre que vous vous sentez mal. Voulez-vous parler de ce qui vous préoccupe ? Rappelez-vous qu'il est normal de ne pas se sentir bien parfois, et le fait de tendre la main est un premier pas courageux.";
+      } else if (userMessage.includes('anxieux') || userMessage.includes('stressé')) {
+        return "L'anxiété est courante. Essayons de comprendre ce qui cause ces sentiments. Cela vous aiderait-il de prendre quelques respirations profondes ensemble ? Inspirez pendant 4 temps, retenez pendant 4, et expirez pendant 6. Cela peut aider à calmer votre système nerveux.";
+      } else if (userMessage.includes('heureux') || userMessage.includes('bien')) {
+        return "Je suis content d'apprendre que vous allez bien ! Quelles choses positives se sont produites récemment dans votre vie ? Célébrer les petites victoires est important pour notre bien-être mental.";
+      } else if (userMessage.includes('merci')) {
+        return "Je vous en prie. Je suis là pour vous soutenir chaque fois que vous avez besoin de quelqu'un à qui parler. Votre santé mentale est importante.";
+      } else {
+        return "Merci de partager cela avec moi. Comment cette situation vous fait-elle vous sentir ? Comprendre nos émotions est une étape importante pour le bien-être mental. Je suis là pour vous écouter et vous aider à traiter ces sentiments.";
+      }
+      
+    case 'en-US':
+      if (userMessage.includes('hello') || userMessage.includes('hi')) {
+        return "Hello! How are you feeling today? I'm here to listen and support you.";
+      } else if (userMessage.includes('sad') || userMessage.includes('depressed')) {
+        return "I'm sorry to hear you're feeling down. Would you like to talk about what's troubling you? Remember that it's okay to not be okay sometimes, and reaching out is a brave first step.";
+      } else if (userMessage.includes('anxious') || userMessage.includes('stressed')) {
+        return "Feeling anxious is common. Let's try to understand what's causing these feelings. Would it help to take a few deep breaths together? Breathe in for 4 counts, hold for 4, and exhale for 6. This can help calm your nervous system.";
+      } else if (userMessage.includes('happy') || userMessage.includes('good')) {
+        return "I'm glad to hear you're doing well! What positive things have been happening in your life recently? Celebrating small victories is important for our mental wellbeing.";
+      } else if (userMessage.includes('thank')) {
+        return "You're welcome. I'm here to support you whenever you need someone to talk to. Your mental health matters.";
+      } else {
+        return "Thank you for sharing that with me. How does this situation make you feel? Understanding our emotions is an important step in mental wellness. I'm here to listen and help you process these feelings.";
+      }
+      
+    case 'es-ES':
+      if (userMessage.includes('hola') || userMessage.includes('buenos dias')) {
+        return "¡Hola! ¿Cómo te sientes hoy? Estoy aquí para escucharte y apoyarte.";
+      } else if (userMessage.includes('triste') || userMessage.includes('deprimido')) {
+        return "Lamento saber que te sientes mal. ¿Te gustaría hablar sobre lo que te preocupa? Recuerda que está bien no estar bien a veces, y pedir ayuda es un primer paso valiente.";
+      } else if (userMessage.includes('ansioso') || userMessage.includes('estresado')) {
+        return "Sentirse ansioso es común. Intentemos entender qué está causando estos sentimientos. ¿Te ayudaría respirar profundamente juntos? Inhala durante 4 tiempos, mantén durante 4 y exhala durante 6. Esto puede ayudar a calmar tu sistema nervioso.";
+      } else if (userMessage.includes('feliz') || userMessage.includes('bien')) {
+        return "¡Me alegra saber que estás bien! ¿Qué cosas positivas han estado sucediendo en tu vida recientemente? Celebrar pequeñas victorias es importante para nuestro bienestar mental.";
+      } else if (userMessage.includes('gracias')) {
+        return "De nada. Estoy aquí para apoyarte siempre que necesites a alguien con quien hablar. Tu salud mental es importante.";
+      } else {
+        return "Gracias por compartir eso conmigo. ¿Cómo te hace sentir esta situación? Entender nuestras emociones es un paso importante en el bienestar mental. Estoy aquí para escuchar y ayudarte a procesar estos sentimientos.";
+      }
+      
+    case 'de-DE':
+      if (userMessage.includes('hallo') || userMessage.includes('guten tag')) {
+        return "Hallo! Wie fühlst du dich heute? Ich bin hier, um dir zuzuhören und dich zu unterstützen.";
+      } else if (userMessage.includes('traurig') || userMessage.includes('deprimiert')) {
+        return "Es tut mir leid zu hören, dass du dich schlecht fühlst. Möchtest du über das sprechen, was dich beunruhigt? Denk daran, dass es in Ordnung ist, manchmal nicht in Ordnung zu sein, und Hilfe zu suchen ist ein mutiger erster Schritt.";
+      } else if (userMessage.includes('ängstlich') || userMessage.includes('gestresst')) {
+        return "Sich ängstlich zu fühlen ist normal. Versuchen wir zu verstehen, was diese Gefühle verursacht. Würde es helfen, gemeinsam einige tiefe Atemzüge zu nehmen? Atme 4 Sekunden ein, halte 4 Sekunden und atme 6 Sekunden aus. Das kann dein Nervensystem beruhigen.";
+      } else if (userMessage.includes('glücklich') || userMessage.includes('gut')) {
+        return "Ich freue mich zu hören, dass es dir gut geht! Welche positiven Dinge sind in letzter Zeit in deinem Leben passiert? Kleine Erfolge zu feiern ist wichtig für unser mentales Wohlbefinden.";
+      } else if (userMessage.includes('danke')) {
+        return "Gerne. Ich bin für dich da, wann immer du jemanden zum Reden brauchst. Deine psychische Gesundheit ist wichtig.";
+      } else {
+        return "Danke, dass du das mit mir teilst. Wie lässt dich diese Situation fühlen? Das Verstehen unserer Emotionen ist ein wichtiger Schritt für das mentale Wohlbefinden. Ich bin hier, um zuzuhören und dir zu helfen, diese Gefühle zu verarbeiten.";
+      }
+      
+    case 'it-IT':
+      if (userMessage.includes('ciao') || userMessage.includes('buongiorno')) {
+        return "Ciao! Come ti senti oggi? Sono qui per ascoltarti e supportarti.";
+      } else if (userMessage.includes('triste') || userMessage.includes('depresso')) {
+        return "Mi dispiace sentire che ti senti giù. Vorresti parlare di ciò che ti preoccupa? Ricorda che va bene non stare bene a volte, e cercare aiuto è un primo passo coraggioso.";
+      } else if (userMessage.includes('ansioso') || userMessage.includes('stressato')) {
+        return "Sentirsi ansiosi è comune. Cerchiamo di capire cosa sta causando questi sentimenti. Ti aiuterebbe fare dei respiri profondi insieme? Inspira per 4 tempi, trattieni per 4 ed espira per 6. Questo può aiutare a calmare il tuo sistema nervoso.";
+      } else if (userMessage.includes('felice') || userMessage.includes('bene')) {
+        return "Sono contento di sentire che stai bene! Quali cose positive sono successe nella tua vita recentemente? Celebrare piccole vittorie è importante per il nostro benessere mentale.";
+      } else if (userMessage.includes('grazie')) {
+        return "Prego. Sono qui per supportarti ogni volta che hai bisogno di qualcuno con cui parlare. La tua salute mentale è importante.";
+      } else {
+        return "Grazie per aver condiviso questo con me. Come ti fa sentire questa situazione? Comprendere le nostre emozioni è un passo importante nel benessere mentale. Sono qui per ascoltare e aiutarti a elaborare questi sentimenti.";
+      }
+      
+    case 'ar-SA':
+      // Arabic responses
+      if (userMessage.includes('مرحبا') || userMessage.includes('السلام عليكم')) {
+        return "مرحباً! كيف تشعر اليوم؟ أنا هنا للاستماع إليك ودعمك.";
+      } else if (userMessage.includes('حزين') || userMessage.includes('مكتئب')) {
+        return "يؤسفني سماع أنك تشعر بالإحباط. هل ترغب في التحدث عما يزعجك؟ تذكر أنه من الطبيعي ألا تكون على ما يرام أحيانًا، وطلب المساعدة هو خطوة أولى شجاعة.";
+      } else if (userMessage.includes('قلق') || userMessage.includes('متوتر')) {
+        return "الشعور بالقلق أمر شائع. دعنا نحاول فهم ما يسبب هذه المشاعر. هل سيساعدك أخذ بعض الأنفاس العميقة معًا؟ استنشق لمدة 4 عدات، احتفظ بها لمدة 4، وازفر لمدة 6. هذا يمكن أن يساعد في تهدئة جهازك العصبي.";
+      } else if (userMessage.includes('سعيد') || userMessage.includes('بخير')) {
+        return "يسعدني سماع أنك بخير! ما هي الأشياء الإيجابية التي حدثت في حياتك مؤخرًا؟ الاحتفال بالانتصارات الصغيرة مهم لصحتنا النفسية.";
+      } else if (userMessage.includes('شكرا')) {
+        return "على الرحب والسعة. أنا هنا لدعمك كلما احتجت إلى شخص للتحدث معه. صحتك النفسية مهمة.";
+      } else {
+        return "شكرًا لمشاركة ذلك معي. كيف تجعلك هذه الحالة تشعر؟ فهم عواطفنا هو خطوة مهمة في العافية النفسية. أنا هنا للاستماع ومساعدتك في معالجة هذه المشاعر.";
+      }
+      
+    default:
+      // Default to French
+      return "Merci de partager cela avec moi. Je suis là pour vous écouter et vous soutenir dans votre parcours de bien-être mental.";
   }
 };
 
@@ -202,6 +266,7 @@ export const useChatStore = create<ChatState>()(
         
         // Detect language from user input
         const detectedLang = role === 'user' ? detectLanguage(content) : language;
+        console.log('Detected language:', detectedLang);
         
         const newMessage: Message = {
           id: uuidv4(),
@@ -245,6 +310,7 @@ export const useChatStore = create<ChatState>()(
             // Get the updated session with the user message
             const currentSession = get().sessions.find(session => session.id === currentSessionId);
             if (currentSession) {
+              console.log('Generating AI response in language:', detectedLang);
               const aiResponse = await generateAIResponse(currentSession.messages, detectedLang);
               
               const aiMessage: Message = {
@@ -314,6 +380,7 @@ export const useChatStore = create<ChatState>()(
       },
       
       setLanguage: (lang) => {
+        console.log('Setting global language to:', lang);
         set({ language: lang });
       },
     }),

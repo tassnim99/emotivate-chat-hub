@@ -32,7 +32,8 @@ const ChatInput = () => {
     startListening, 
     stopListening, 
     clearTranscript, 
-    setLanguage: setVoiceLanguage 
+    setLanguage: setVoiceLanguage,
+    isAvailable
   } = useVoiceStore();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isRecordingPulse, setIsRecordingPulse] = useState(false);
@@ -45,13 +46,14 @@ const ChatInput = () => {
     }
   }, [message]);
 
-  // Add transcript to message when voice input stops
+  // Add transcript to message when voice input is received
   useEffect(() => {
-    if (!isListening && transcript) {
+    if (transcript) {
+      console.log('Setting message from transcript:', transcript);
       setMessage(prev => (prev + ' ' + transcript).trim());
       clearTranscript();
     }
-  }, [isListening, transcript, clearTranscript]);
+  }, [transcript, clearTranscript]);
 
   // Animate recording pulse
   useEffect(() => {
@@ -67,6 +69,7 @@ const ChatInput = () => {
 
   const handleSendMessage = async () => {
     if (message.trim()) {
+      console.log('Sending message:', message);
       await addMessage(message.trim(), 'user');
       setMessage('');
       
@@ -84,6 +87,11 @@ const ChatInput = () => {
   };
 
   const toggleVoiceInput = () => {
+    if (!isAvailable) {
+      toast.error("La reconnaissance vocale n'est pas prise en charge par ce navigateur");
+      return;
+    }
+    
     if (isListening) {
       stopListening();
     } else {
@@ -141,8 +149,10 @@ const ChatInput = () => {
           type="button"
           size="icon"
           variant="ghost"
-          className={`rounded-full ${isListening ? 'text-destructive animate-pulse' : ''}`}
+          className={`rounded-full ${isListening ? 'text-destructive animate-pulse' : ''} ${!isAvailable ? 'opacity-50' : ''}`}
           onClick={toggleVoiceInput}
+          disabled={!isAvailable}
+          title={isAvailable ? "Utiliser la reconnaissance vocale" : "Reconnaissance vocale non disponible"}
         >
           {isListening ? (
             <MicOff className="h-5 w-5" />

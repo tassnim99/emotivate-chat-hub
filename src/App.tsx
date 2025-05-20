@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import AuthGuard from "./components/AuthGuard";
+import Presentation from "./pages/Presentation";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,8 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Presentation />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/auth" element={
               <AuthGuard requireAuth={false}>
                 <Auth />

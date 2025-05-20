@@ -56,14 +56,17 @@ interface VoiceState {
   stopListening: () => void;
   clearTranscript: () => void;
   setLanguage: (lang: string) => void;
+  isAvailable: boolean;
 }
 
 export const useVoiceStore = create<VoiceState>()((set, get) => {
+  let isApiAvailable = false;
   // SpeechRecognition setup
   const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition: SpeechRecognition | null = null;
 
   if (SpeechRecognitionAPI) {
+    isApiAvailable = true;
     recognition = new SpeechRecognitionAPI();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -72,25 +75,35 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     recognition.onstart = () => {
       console.log('Voice recognition started');
       toast.success('Écoute active');
+      set({ isListening: true });
     };
 
     recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
-        .map((result) => result[0].transcript)
-        .join(' ');
-      
-      set({ transcript });
+      try {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join(' ');
+        
+        set({ transcript });
+        console.log('Transcript updated:', transcript);
+      } catch (error) {
+        console.error('Error processing speech result:', error);
+      }
     };
 
     recognition.onerror = (event) => {
       console.error('Speech recognition error', event.error);
-      toast.error('Erreur de reconnaissance vocale');
+      toast.error('Erreur de reconnaissance vocale: ' + event.error);
       set({ isListening: false });
     };
 
     recognition.onend = () => {
       console.log('Voice recognition ended');
-      set({ isListening: false });
+      if (get().isListening) {
+        set({ isListening: false });
+        // Only show toast if the recognition wasn't manually stopped
+        toast.info('Écoute terminée');
+      }
     };
   } else {
     console.warn('Speech recognition not supported in this browser');
@@ -100,25 +113,34 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     isListening: false,
     transcript: '',
     language: 'fr-FR',
+    isAvailable: isApiAvailable,
 
     startListening: () => {
-      if (recognition) {
-        try {
-          // Reset recognition language to current setting
-          recognition.lang = get().language;
-          recognition.start();
-          set({ isListening: true });
-        } catch (error) {
-          console.error('Error starting speech recognition:', error);
-          toast.error('Erreur lors du démarrage de la reconnaissance vocale');
-        }
-      } else {
-        toast.error('La reconnaissance vocale n\'est pas prise en charge par ce navigateur');
+      if (!recognition) {
+        toast.error('La reconnaissance vocale n\'est pas disponible sur ce navigateur');
+        return;
+      }
+      
+      if (get().isListening) {
+        console.log('Already listening, stopping first');
+        recognition.stop();
+      }
+
+      try {
+        // Reset recognition language to current setting
+        recognition.lang = get().language;
+        console.log('Starting speech recognition with language:', get().language);
+        recognition.start();
+      } catch (error) {
+        console.error('Error starting speech recognition:', error);
+        toast.error('Erreur lors du démarrage de la reconnaissance vocale');
+        set({ isListening: false });
       }
     },
 
     stopListening: () => {
-      if (recognition) {
+      if (recognition && get().isListening) {
+        console.log('Stopping speech recognition');
         recognition.stop();
         set({ isListening: false });
       }
@@ -129,6 +151,7 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     },
 
     setLanguage: (lang: string) => {
+      console.log('Setting voice recognition language to:', lang);
       set({ language: lang });
       if (recognition) {
         recognition.lang = lang;
