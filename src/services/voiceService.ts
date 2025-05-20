@@ -57,6 +57,8 @@ interface VoiceState {
   clearTranscript: () => void;
   setLanguage: (lang: string) => void;
   isAvailable: boolean;
+  reconnectionAttempts: number;
+  maxReconnectionAttempts: number;
 }
 
 export const useVoiceStore = create<VoiceState>()((set, get) => {
@@ -88,7 +90,7 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
       const lang = get().language;
       toast.success(messages[lang] || messages['fr-FR']);
       
-      set({ isListening: true });
+      set({ isListening: true, reconnectionAttempts: 0 });
     };
 
     recognition.onresult = (event) => {
@@ -107,8 +109,41 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     recognition.onerror = (event) => {
       console.error('Speech recognition error', event.error);
       
+      // Specific handling for network errors
+      if (event.error === 'network') {
+        const currentState = get();
+        const messages = {
+          'fr-FR': 'Problème de connexion réseau. Nouvelle tentative...',
+          'en-US': 'Network connection issue. Retrying...',
+          'es-ES': 'Problema de conexión de red. Reintentando...',
+          'it-IT': 'Problema di connessione di rete. Nuovo tentativo...',
+          'de-DE': 'Netzwerkverbindungsproblem. Versuche erneut...',
+          'ar-SA': 'مشكلة في اتصال الشبكة. إعادة المحاولة...'
+        };
+        
+        const lang = currentState.language;
+        toast.warning(messages[lang] || messages['fr-FR']);
+        
+        // Try to reconnect if under the max attempts
+        if (currentState.reconnectionAttempts < currentState.maxReconnectionAttempts) {
+          set({ reconnectionAttempts: currentState.reconnectionAttempts + 1 });
+          
+          // Wait before reconnecting
+          setTimeout(() => {
+            if (get().isListening && recognition) {
+              try {
+                recognition.start();
+              } catch (error) {
+                console.error('Error restarting speech recognition:', error);
+              }
+            }
+          }, 2000);
+          return;
+        }
+      }
+      
       // Display error toast message based on current language
-      const messages = {
+      const errorMessages = {
         'fr-FR': 'Erreur de reconnaissance vocale: ',
         'en-US': 'Voice recognition error: ',
         'es-ES': 'Error de reconocimiento de voz: ',
@@ -118,14 +153,16 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
       };
       
       const lang = get().language;
-      toast.error((messages[lang] || messages['fr-FR']) + event.error);
+      toast.error((errorMessages[lang] || errorMessages['fr-FR']) + event.error);
       
       set({ isListening: false });
     };
 
     recognition.onend = () => {
       console.log('Voice recognition ended');
-      if (get().isListening) {
+      // Only show the "listening ended" message if we weren't trying to reconnect
+      // and if we were actually listening (not stopped manually)
+      if (get().isListening && get().reconnectionAttempts >= get().maxReconnectionAttempts) {
         set({ isListening: false });
         
         // Display toast message based on current language
@@ -136,6 +173,19 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
           'it-IT': 'Ascolto terminato',
           'de-DE': 'Zuhören beendet',
           'ar-SA': 'انتهى الاستماع'
+        };
+        
+        const lang = get().language;
+        toast.info(messages[lang] || messages['fr-FR']);
+      } else if (!get().isListening) {
+        // Normal stop (manual)
+        const messages = {
+          'fr-FR': 'Écoute arrêtée',
+          'en-US': 'Listening stopped',
+          'es-ES': 'Escucha detenida',
+          'it-IT': 'Ascolto fermato',
+          'de-DE': 'Zuhören gestoppt',
+          'ar-SA': 'تم إيقاف الاستماع'
         };
         
         const lang = get().language;
@@ -151,6 +201,8 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
     transcript: '',
     language: 'fr-FR',
     isAvailable: isApiAvailable,
+    reconnectionAttempts: 0,
+    maxReconnectionAttempts: 3,
 
     startListening: () => {
       if (!recognition) {
@@ -178,6 +230,10 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
         // Reset recognition language to current setting
         recognition.lang = get().language;
         console.log('Starting speech recognition with language:', get().language);
+        
+        // Reset reconnection attempts
+        set({ reconnectionAttempts: 0 });
+        
         recognition.start();
       } catch (error) {
         console.error('Error starting speech recognition:', error);
@@ -203,7 +259,7 @@ export const useVoiceStore = create<VoiceState>()((set, get) => {
       if (recognition && get().isListening) {
         console.log('Stopping speech recognition');
         recognition.stop();
-        set({ isListening: false });
+        set({ isListening: false, reconnectionAttempts: 0 });
       }
     },
 

@@ -12,8 +12,28 @@ interface ChatMessageProps {
 
 // Helper to detect if content is in right-to-left language
 const isRTL = (text: string) => {
-  // Simple detection of Arabic characters
-  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text);
+  // More comprehensive detection of RTL characters, especially Arabic
+  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u0591-\u07FF]/.test(text);
+};
+
+// Helper to format message content with markdown-like syntax
+const formatMessageContent = (content: string) => {
+  // Replace **text** with bold text
+  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Replace *text* with italic text
+  content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  // Replace _text_ with underlined text (alternative for italic)
+  content = content.replace(/_(.*?)_/g, '<u>$1</u>');
+  // Replace lists
+  content = content.replace(/^\s*-\s+(.*)/gm, '<li>$1</li>');
+  
+  // Handle numbered lists (1. text)
+  content = content.replace(/^\s*(\d+)\.\s+(.*)/gm, '<li>$2</li>');
+  
+  // Add line breaks
+  content = content.replace(/\n/g, '<br />');
+  
+  return content;
 };
 
 const ChatMessage = ({ message }: ChatMessageProps) => {
@@ -60,14 +80,21 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
           "prose prose-sm prose-p:leading-relaxed prose-pre:p-0",
           "max-w-full transition-all duration-300 hover:bg-muted/20 p-2 rounded-md"
         )}>
-          <div className={isRightToLeft ? "text-right" : "text-left"} dir={isRightToLeft ? "rtl" : "ltr"}>
+          <div 
+            className={isRightToLeft ? "text-right" : "text-left"} 
+            dir={isRightToLeft ? "rtl" : "ltr"}
+          >
             {paragraphs.map((paragraph, i) => (
-              <p key={i} className={cn(
-                "whitespace-pre-wrap",
-                i < paragraphs.length - 1 ? "mb-4" : ""
-              )}>
-                {paragraph}
-              </p>
+              paragraph.trim() ? (
+                <p 
+                  key={i} 
+                  className={cn(
+                    "whitespace-pre-wrap",
+                    i < paragraphs.length - 1 ? "mb-4" : ""
+                  )}
+                  dangerouslySetInnerHTML={{ __html: formatMessageContent(paragraph) }}
+                />
+              ) : <br key={i} />
             ))}
           </div>
         </div>
